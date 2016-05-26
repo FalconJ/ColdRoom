@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extrahead %}
+<script src='{% static "js/Chart.min.js" %}'></script>
+<script src='{% static "js/jquery-1.12.4.min.js" %}'></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var dias = [];
+	for(var i=1; i<={{length}}; i++){
+		dias.push(i);
+	}
+
+    var data = {
+        labels: dias,
+        datasets: [
+            {
+                label: "Reporte Promedio de las fechas",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: {{ data }}
+            }
+        ]
+    };
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myLineChart = new Chart(ctx).Line(data);
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+<h1>Reporte de Corriente Promedio de los dias</h1>
+<h2>{{ form.data.Fecha_Inicial }} al {{ form.data.Fecha_Final }}</h2>
+
+<table class="table">
+	<thead>
+		<th class="col-sm-3">Dia</th>
+		<th class="col-sm-3">Humedad Promedio</th>
+	</thead>
+	{% for dia, fecha in zip %}
+			<tr class="{% cycle 'succes' 'danger'%}">
+			<td>{{fecha|date:"d-M-Y"}}</td>
+			<td>{{dia}}</td>
+			</tr>
+	{% endfor %}
+</table>
+
+<canvas id="myChart" width="800" height="400"></canvas>
+
+<script type="text/javascript">
+window.onload = setTimeout(function(){ 
+        window.print();
+    }, 2000);  
+</script>
+{% endblock %}
